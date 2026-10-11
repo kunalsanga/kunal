@@ -601,6 +601,24 @@ footer {
     .skills-container h3 {
         font-size: 1.4rem;
     }
+    .resume-btn {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.65rem;
+        margin-left: 0.5rem;
+    }
+    .dock {
+        padding: 8px 10px 6px;
+        gap: 5px;
+        max-width: 96vw;
+    }
+    .dock-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+    }
+    .dock-icon i {
+        font-size: 1.15rem;
+    }
 }
 
 html, body {
@@ -719,6 +737,13 @@ footer {
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+    .resume-btn {
+        font-size: 0.95rem;
+        padding: 0.4rem 0.8rem;
+        margin-left: 0.8rem;
+        white-space: nowrap;
+    }
+
     .dock {
         padding: 10px 14px 8px;
         gap: 6px;
