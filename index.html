@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" as="image" href="poster.jpg">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K0X18BH0N4"></script>
@@ -22,9 +23,12 @@
 </head>
 <body>
 
-    <video class="background-video" autoplay loop muted playsinline>
-        <source src="BG1.mp4" type="video/mp4">
-        Your browser does not support the video tag.
+    <video id="bgVideo" class="background-video" poster="poster.jpg" loop muted playsinline preload="none" aria-hidden="true" tabindex="-1">
+        <noscript>
+            <video class="background-video" autoplay loop muted playsinline poster="poster.jpg">
+                <source src="BG1.mp4" type="video/mp4">
+            </video>
+        </noscript>
     </video>
     <nav>
         <div class="nav-container">
@@ -395,6 +399,45 @@
                 });
             });
         }
+
+        // Optimized Background Video Loader
+        (function() {
+            const video = document.getElementById('bgVideo');
+            if (!video) return;
+
+            // 1. Respect user preference for reduced motion
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) return;
+
+            // 2. Respect data-saving settings and severely constrained connections
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn && (conn.saveData || conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g')) {
+                return;
+            }
+
+            // 3. Responsive source selection: mobile (<= 768px) vs desktop (> 768px)
+            // Ensures exactly one video asset is requested — eliminating duplicate downloads.
+            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+            video.src = isMobile ? 'BG1-mobile.mp4' : 'BG1.mp4';
+            video.muted = true; // Required for mobile autoplay compliance
+
+            const startPlayback = () => {
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // Browser autoplay policy or battery saver mode prevented auto-playback;
+                        // poster image remains seamlessly displayed.
+                    });
+                }
+            };
+
+            // Defer video playback until critical DOM is parsed and interactive
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', startPlayback, { once: true });
+            } else {
+                startPlayback();
+            }
+        })();
     </script>
 </body>
 </html>

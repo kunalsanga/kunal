@@ -776,10 +776,12 @@ h1.appear, h2.appear {
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     object-fit: cover;
     z-index: -1;
     pointer-events: none;
     opacity: 0.55;
+    background-color: #000;
 }
 
 
